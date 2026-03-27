@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISCONNECT+ | The Band</title>
+    
+    <!-- 1. 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. 引入 React 和 Babel -->
+    <script crossorigin src="https://cdn.staticfile.org/react/18.2.0/umd/react.development.js"></script>
+    <script crossorigin src="https://cdn.staticfile.org/react-dom/18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.staticfile.org/babel-standalone/7.23.5/babel.min.js"></script>
+
+    <!-- 3. 自定义样式 -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+      
+      body { background-color: #000; color: #e5e5e5; font-family: 'Space Mono', monospace; }
+      h1, h2, h3, h4 { font-family: 'Cinzel', serif; }
+      
+      .glitch-text { position: relative; }
+      .glitch-text::before, .glitch-text::after {
+        content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;
+      }
+      .glitch-text::before {
+        left: 2px; text-shadow: -1px 0 #ff00c1; clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+      }
+      .glitch-text::after {
+        left: -2px; text-shadow: -1px 0 #00fff9; clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 5s infinite linear alternate-reverse;
+      }
+      @keyframes glitch-anim {
+        0% { clip: rect(38px, 9999px, 86px, 0); } 20% { clip: rect(45px, 9999px, 66px, 0); }
+        40% { clip: rect(69px, 9999px, 14px, 0); } 60% { clip: rect(10px, 9999px, 55px, 0); }
+        80% { clip: rect(59px, 9999px, 49px, 0); } 100% { clip: rect(91px, 9999px, 28px, 0); }
+      }
+      @keyframes glitch-anim2 {
+        0% { clip: rect(12px, 9999px, 56px, 0); } 20% { clip: rect(25px, 9999px, 66px, 0); }
+        40% { clip: rect(19px, 9999px, 54px, 0); } 60% { clip: rect(70px, 9999px, 35px, 0); }
+        80% { clip: rect(99px, 9999px, 49px, 0); } 100% { clip: rect(51px, 9999px, 68px, 0); }
+      }
+
+      @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #111; }
+      ::-webkit-scrollbar-thumb { background: #333; }
+      ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- CONSTANTS ---
+        const BAND_IMAGES = {
+            RIBCAGE_DETAIL: "./images/ribcage_detail.jpg", 
+            DINO_RUN: "./images/dino_run.jpg",
+            TREX_WAVE: "./images/trex_wave.jpg",
+            SKELETON_STAND: "./images/skeleton_stand.jpg",
+            RIBCAGE_BORDER: "./images/ribcage_border.jpg",
+            SKELETON_BEACH: "./images/skeleton_beach.jpg",
+            ALIEN_UFO: "./images/alien_ufo.jpg",
+            MOTH_WOMAN: "./images/moth_woman.jpg",
+            CROW_BEACH: "./images/crow_beach.jpg",
+            SKELETON_LIGHTNING: "./images/skeleton_lightning.jpg"
+        };
+
+        // --- 音乐列表修改区域 ---
+        const SONGS = [
+            { id: 1, title: "荒川Arakawa", duration: "03:42", src: "./audio/荒川.mp3" },
+            { id: 2, title: "游园地amusement park", duration: "04:15", src: "./audio/游园地.mp3" }
+        ];
+
+        const MEMBERS = [
+            {
+                name: "Kunbo", name_zh: "琨波", 
+                role: "Guitar / Synth / Visuals", role_zh: "吉他 / 合成器 / 视觉",
+                image: "./images/guitar.jpg", 
+                description: "Weaving visual noise into audio.", description_zh: "将视觉噪音编织成音频。"
+            },
+            {
+                name: "Wenye", name_zh: "文野", 
+                role: "Guitar / Synth / Production", role_zh: "吉他 / 合成器 / 制作",
+                image: "./images/synth.jpg", 
+                description: "Architect of the sonic landscape.", description_zh: "声景的构建者。"
+            }
+        ];
+
+        // --- NEWS UPDATES 修改区域 ---
+        const NEWS_UPDATES = [
+            { 
+                id: 1, 
+                date: "DEC 08", 
+                category: "RELEASE", category_zh: "发布",
+                title: "Disconnect self-titled EP Out Now", title_zh: "Disconnect同名ep现已发售",
+                summary: "The wait is over. Physical copies available in store.", summary_zh: "等待结束。实体唱片现已在商店上架。"
+            },
+            { 
+                id: 2, 
+                date: "NOV 25", 
+                category: "EVENT", category_zh: "活动",
+                title: "Secret Show Recap", title_zh: "地下室秘密演出回顾",
+                summary: "Photos from the underground bunker session uploaded.", summary_zh: "来自地下掩体会议的照片已上传。"
+            },
+            { 
+                id: 3, 
+                date: "NOV 10", 
+                category: "RECORD", category_zh: "录音",
+                title: "Field Recording Session", title_zh: "野外录音 实况记录",
+                summary: "Capturing the sounds of the industrial wasteland.", summary_zh: "捕捉工业荒原的声音。"
+            },
+            { 
+                id: 4, 
+                date: "OCT 31", 
+                category: "LIVE", category_zh: "现场",
+                title: "Halloween Ritual Complete", title_zh: "万圣节仪式完成",
+                summary: "Thank you Neo Tokyo. We are one.", summary_zh: "感谢新东京。我们合而为一。"
+            }
+        ];
+
+        // --- MERCH ITEMS 修改区域 ---
+        const MERCH_ITEMS = [
+            { 
+                id: 1, 
+                name: "Disconnect Self-titled EP", name_zh: "Disconnect同名ep现已发售", 
+                type: "EP / Vinyl", type_zh: "迷你专辑 / 黑胶",
+                price: "$35.00", 
+                image: "./images/my_record.jpg", 
+                soldOut: false 
+            },
+            { 
+                id: 2, 
+                name: "Ritual Tee", name_zh: "仪式感 T恤", 
+                type: "Apparel", type_zh: "服饰",
+                price: "$25.00", 
+                image: "./images/hc.jpg", 
+                soldOut: false 
+            },
+            { 
+                id: 3, 
+                name: "Disconnect Hoodie", name_zh: "断连卫衣", 
+                type: "Apparel", type_zh: "服饰",
+                price: "$55.00", 
+                image: BAND_IMAGES.SKELETON_LIGHTNING, 
+                soldOut: true 
+            },
+            { 
+                id: 4, 
+                name: "Disconnect Artwork", name_zh: "disconnect画作", 
+                type: "Print", type_zh: "海报/画作",
+                price: "$15.00", 
+                image: "./images/qz.jpg", 
+                soldOut: false 
+            }
+        ];
+
+        const VIDEOS = [
+            { id: 1, title: "Official Music Video", title_zh: "官方 MV", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+            { id: 2, title: "Live Session", title_zh: "现场录制", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }
+        ];
+
+        const CONTENT = {
+            en: {
+                nav: { music: "MUSIC", news: "NEWS", visuals: "VISUALS", members: "MEMBERS", store: "STORE", guestbook: "LOGS" },
+                hero: { subtitle: "Surrealist Audio Visual Collective", scroll: "Descend" },
+                music: { title: "TRANSMISSIONS" },
+                news: { title: "LATEST TRANSMISSIONS", read: "Read More" },
+                visuals: { title: "VISUAL ARCHIVE", subtitle: "Signals captured on tape." },
+                members: { title: "THE ENTITIES", subtitle: "Fragments of consciousness trapped in digital bone." },
+                store: { title: "ARTIFACTS", subtitle: "Physical manifestations of the void.", buy: "ACQUIRE", soldOut: "SOLD OUT" },
+                guestbook: { title: "ECHOES OF THE VOID", namePlaceholder: "CODENAME (OPTIONAL)", msgPlaceholder: "LEAVE A TRACE...", submit: "INITIATE UPLOAD", empty: "No signals detected yet." },
+                footer: { rights: "All rights reserved.", designed: "Designed in the Void." }
+            },
+            zh: {
+                nav: { music: "音乐", news: "动态", visuals: "视觉", members: "成员", store: "商店", guestbook: "留言" },
+                hero: { subtitle: "超现实视听集合体", scroll: "下潜" },
+                music: { title: "信号传输" },
+                news: { title: "最新讯号", read: "阅读全文" },
+                visuals: { title: "视觉档案", subtitle: "录像带捕捉到的信号。" },
+                members: { title: "实体", subtitle: "被困在数字骨骼中的意识碎片。" },
+                store: { title: "遗物", subtitle: "虚空的物理具象化。", buy: "获取", soldOut: "售罄" },
+                guestbook: { title: "虚空回响", namePlaceholder: "代号 (可选)", msgPlaceholder: "留下你的痕迹...", submit: "启动上传", empty: "尚未检测到信号。" },
+                footer: { rights: "版权所有。", designed: "设计于虚空之中。" }
+            }
+        };
+
+        const getYouTubeEmbedUrl = (url) => {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            const id = (match && match[2].length === 11) ? match[2] : null;
+            return id ? "https://www.youtube.com/embed/" + id : null;
+        };
+
+        const MusicPlayer = ({ lang }) => {
+            const [currentSongId, setCurrentSongId] = React.useState(null);
+            const [isPlaying, setIsPlaying] = React.useState(false);
+            const audioRef = React.useRef(null); 
+            const text = CONTENT[lang].music;
+
+            React.useEffect(() => {
+                if (currentSongId !== null && audioRef.current) {
+                    const song = SONGS.find(s => s.id === currentSongId);
+                    if (song) {
+                        audioRef.current.src = song.src;
+                        audioRef.current.play().catch(e => console.error("播放失败:", e));
+                        setIsPlaying(true);
+                    }
+                }
+            }, [currentSongId]);
+
+            const togglePlay = (id) => {
+                if (currentSongId === id) {
+                    if (isPlaying) { audioRef.current.pause(); setIsPlaying(false); }
+                    else { audioRef.current.play(); setIsPlaying(true); }
+                } else { setCurrentSongId(id); }
+            };
+
+            return (
+                <div className="w-full max-w-xl mx-auto mt-12 mb-12">
+                    <audio ref={audioRef} onEnded={() => setIsPlaying(false)} />
+                    <h3 className="text-2xl font-bold font-cinzel tracking-wider mb-6 border-b border-gray-800 pb-2">{text.title}</h3>
+                    <div className="flex flex-col gap-2">
+                        {SONGS.map((song) => (
+                            <div key={song.id} onClick={() => togglePlay(song.id)}
+                                className={`group flex items-center justify-between p-4 cursor-pointer transition-all duration-300 border border-transparent hover:border-gray-800 ${currentSongId === song.id ? 'bg-white/10 border-gray-800' : 'hover:bg-white/5'}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="w-8 h-8 flex items-center justify-center border border-gray-600 rounded-sm">
+                                        {currentSongId === song.id && isPlaying ? (
+                                            <div className="flex gap-1 h-3 items-end">
+                                                <span className="w-0.5 bg-white h-full animate-[bounce_1s_infinite]"></span>
+                                                <span className="w-0.5 bg-white h-2 animate-[bounce_1.2s_infinite]"></span>
+                                                <span className="w-0.5 bg-white h-1 animate-[bounce_0.8s_infinite]"></span>
+                                            </div>
+                                        ) : <span className="text-xs text-gray-500">▶</span>}
+                                    </div>
+                                    <span className={`font-mono uppercase tracking-wide text-sm ${currentSongId === song.id ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                                        {song.title}
+                                    </span>
+                                </div>
+                                <span className="text-xs text-gray-600 font-mono">{song.duration}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const Visuals = ({ lang }) => {
+            const text = CONTENT[lang].visuals;
+            return (
+                <div className="w-full">
+                    <h2 className="text-4xl md:text-5xl font-cinzel font-bold text-center mb-4 text-white tracking-widest">{text.title}</h2>
+                    <p className="text-center text-gray-500 font-mono text-xs uppercase tracking-widest mb-16 max-w-md mx-auto">{text.subtitle}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                        {VIDEOS.map((video) => {
+                            const embedUrl = getYouTubeEmbedUrl(video.url);
+                            return (
+                                <div key={video.id} className="w-full">
+                                    <div className="relative w-full aspect-video border border-gray-800 bg-black group hover:border-white transition-colors duration-500">
+                                        {embedUrl ? (
+                                            <iframe src={embedUrl} title={video.title} className="absolute top-0 left-0 w-full h-full grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" frameBorder="0" allowFullScreen></iframe>
+                                        ) : ( <div className="absolute inset-0 flex items-center justify-center text-gray-700 font-mono text-xs">VIDEO SIGNAL LOST</div> )}
+                                    </div>
+                                    <h4 className="mt-4 text-sm font-mono text-gray-400 uppercase tracking-wider">{lang === 'zh' ? video.title_zh : video.title}</h4>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        const Merchandise = ({ lang }) => {
+            const text = CONTENT[lang].store;
+            return (
+                <div className="w-full">
+                    <h2 className="text-4xl md:text-5xl font-cinzel font-bold text-center mb-4 text-white tracking-widest">{text.title}</h2>
+                    <p className="text-center text-gray-500 font-mono text-xs uppercase tracking-widest mb-16">{text.subtitle}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {MERCH_ITEMS.map((item) => (
+                            <div key={item.id} className="group flex flex-col bg-black border border-gray-800 hover:border-white transition-colors duration-500 relative">
+                                <div className="aspect-square w-full overflow-hidden relative border-b border-gray-800">
+                                    <img src={item.image} alt={item.name} className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${item.soldOut ? 'grayscale opacity-50' : 'grayscale group-hover:grayscale-0'}`} />
+                                    {item.soldOut && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+                                            <span className="border-2 border-red-500 text-red-500 px-4 py-1 font-mono text-sm uppercase tracking-widest transform -rotate-12">{text.soldOut}</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="p-6 flex flex-col flex-grow">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <span className="text-xs text-gray-500 font-mono uppercase">{lang === 'zh' ? item.type_zh : item.type}</span>
+                                        <span className="text-white font-mono font-bold">{item.price}</span>
+                                    </div>
+                                    <h4 className="text-lg font-cinzel text-white mb-6 group-hover:text-gray-300 transition-colors">
+                                        {lang === 'zh' ? item.name_zh : item.name}
+                                    </h4>
+                                    <button disabled={item.soldOut} className={`mt-auto w-full py-3 border text-xs font-mono uppercase tracking-[0.2em] transition-all duration-300 ${item.soldOut ? 'border-gray-800 text-gray-700 cursor-not-allowed' : 'border-gray-600 text-gray-400 hover:bg-white hover:text-black hover:border-white'}`}>
+                                        {item.soldOut ? text.soldOut : text.buy}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const Guestbook = ({ lang }) => {
+            const [messages, setMessages] = React.useState([]);
+            const [name, setName] = React.useState('');
+            const [msgText, setMsgText] = React.useState('');
+            const text = CONTENT[lang].guestbook;
+
+            React.useEffect(() => {
+                const saved = localStorage.getItem('disconnect_guestbook');
+                if (saved) try { setMessages(JSON.parse(saved)); } catch(e) {}
+                else setMessages([{ id: 1, name: "System", text: "Connection Established.", date: new Date().toLocaleDateString() }]);
+            }, []);
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (!msgText.trim()) return;
+                const newMsg = { id: Date.now(), name: name.trim() || (lang === 'zh' ? '匿名用户' : 'Anonymous'), text: msgText.trim(), date: new Date().toLocaleDateString() };
+                const updated = [newMsg, ...messages];
+                setMessages(updated);
+                localStorage.setItem('disconnect_guestbook', JSON.stringify(updated));
+                setMsgText(''); setName('');
+            };
+
+            return (
+                <div className="w-full max-w-4xl mx-auto flex flex-col md:flex-row gap-12">
+                    <div className="w-full md:w-1/3">
+                        <h3 className="text-xl font-cinzel font-bold text-white mb-6 border-l-4 border-gray-700 pl-4">{text.title}</h3>
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={text.namePlaceholder} className="bg-white/5 border border-gray-800 p-3 text-white font-mono text-xs focus:outline-none focus:border-white transition-all placeholder-gray-600" />
+                            <textarea value={msgText} onChange={(e) => setMsgText(e.target.value)} placeholder={text.msgPlaceholder} rows="4" className="bg-white/5 border border-gray-800 p-3 text-white font-mono text-xs focus:outline-none focus:border-white transition-all placeholder-gray-600 resize-none"></textarea>
+                            <button className="bg-gray-800 text-white py-3 text-xs font-mono uppercase tracking-widest hover:bg-white hover:text-black transition-colors">{text.submit}</button>
+                        </form>
+                    </div>
+                    <div className="w-full md:w-2/3 max-h-[400px] overflow-y-auto pr-2">
+                        {messages.length === 0 ? (
+                            <div className="text-gray-600 font-mono text-xs italic p-4 border border-dashed border-gray-800">{text.empty}</div>
+                        ) : (
+                            <div className="flex flex-col gap-4">
+                                {messages.map((msg) => (
+                                    <div key={msg.id} className="bg-black border border-gray-800 p-4 hover:border-gray-600 transition-colors animate-fade-in group">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <span className="text-sm font-bold text-white font-mono">{msg.name}</span>
+                                            <span className="text-[10px] text-gray-600 font-mono">{msg.date}</span>
+                                        </div>
+                                        <p className="text-xs text-gray-400 font-mono leading-relaxed">{msg.text}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [scrolled, setScrolled] = React.useState(false);
+            const [lang, setLang] = React.useState('zh'); 
+            const text = CONTENT[lang];
+
+            React.useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > 50);
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            return (
+                <div className="min-h-screen bg-black text-gray-200 overflow-x-hidden selection:bg-white selection:text-black">
+                    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-black/90 backdrop-blur-md border-b border-white/10 py-4' : 'bg-transparent py-6'}`}>
+                        <div className="container mx-auto px-6 flex justify-between items-center">
+                            <div className="flex items-center gap-4">
+                                <div className="font-cinzel font-bold text-xl tracking-widest text-white cursor-pointer select-none">DISCONNECT+</div>
+                                <button onClick={() => setLang(l => l === 'en' ? 'zh' : 'en')} className="text-[10px] border border-white/20 px-2 py-1 hover:bg-white hover:text-black transition-colors font-mono">
+                                    {lang === 'en' ? '中文' : 'EN'}
+                                </button>
+                            </div>
+                            <div className="hidden md:flex gap-8 text-xs font-mono tracking-widest">
+                                <a href="#music" className="hover:text-white transition-colors">{text.nav.music}</a>
+                                <a href="#news" className="hover:text-white transition-colors">{text.nav.news}</a>
+                                <a href="#visuals" className="hover:text-white transition-colors">{text.nav.visuals}</a>
+                                <a href="#members" className="hover:text-white transition-colors">{text.nav.members}</a>
+                                <a href="#store" className="hover:text-white transition-colors">{text.nav.store}</a>
+                                <a href="#guestbook" className="hover:text-white transition-colors text-red-500">{text.nav.guestbook}</a>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <header className="relative h-screen flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 z-0 opacity-50">
+                            <img src={BAND_IMAGES.SKELETON_BEACH} className="w-full h-full object-cover filter grayscale contrast-125 brightness-50" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20"></div>
+                        </div>
+                        <div className="relative z-10 text-center px-4">
+                            <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter font-cinzel glitch-text" data-text="DISCONNECT+">DISCONNECT+</h1>
+                            <p className="mt-6 text-sm md:text-base font-mono tracking-[0.3em] text-gray-300 uppercase">{text.hero.subtitle}</p>
+                        </div>
+                    </header>
+
+                    <section id="music" className="py-24 px-6 bg-zinc-950">
+                        <div className="container mx-auto flex flex-col md:flex-row gap-12 items-center">
+                            <div className="w-full md:w-1/2">
+                                <img src={BAND_IMAGES.SKELETON_LIGHTNING} className="w-full max-w-md mx-auto filter grayscale border border-gray-800" />
+                            </div>
+                            <div className="w-full md:w-1/2"><MusicPlayer lang={lang} /></div>
+                        </div>
+                    </section>
+
+                    <section id="news" className="py-24 px-6 bg-black">
+                        <div className="container mx-auto max-w-4xl">
+                            <h2 className="text-4xl md:text-5xl font-cinzel font-bold text-center mb-16 text-white tracking-widest">{text.news.title}</h2>
+                            <div className="border-t border-gray-800">
+                                {NEWS_UPDATES.map((item) => (
+                                    <div key={item.id} className="group flex flex-col md:flex-row items-baseline justify-between py-8 border-b border-gray-800 hover:bg-white/5 transition-colors px-4 gap-6">
+                                        <div className="flex flex-col md:w-32 flex-shrink-0">
+                                            <span className="text-2xl font-bold font-cinzel text-white">{item.date}</span>
+                                            <span className="text-[10px] text-red-500 font-mono uppercase tracking-widest mt-1">{lang === 'zh' ? item.category_zh : item.category}</span>
+                                        </div>
+                                        <div className="flex-grow">
+                                            <h3 className="text-xl font-mono text-white mb-2">{lang === 'zh' ? item.title_zh : item.title}</h3>
+                                            <p className="text-xs text-gray-500 font-mono">{lang === 'zh' ? item.summary_zh : item.summary}</p>
+                                        </div>
+                                        <button className="flex-shrink-0 px-4 py-2 border border-white/10 text-[10px] text-gray-400 hover:bg-white hover:text-black transition-all uppercase tracking-widest">{text.news.read}</button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="visuals" className="py-24 px-6 bg-zinc-950">
+                        <div className="container mx-auto"><Visuals lang={lang} /></div>
+                    </section>
+
+                    <section id="members" className="py-24 px-6 bg-zinc-900">
+                        <div className="container mx-auto">
+                            <h2 className="text-4xl md:text-5xl font-cinzel font-bold text-center mb-16 text-white tracking-widest">{text.members.title}</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                {MEMBERS.map((member, idx) => (
+                                    <div key={idx} className="group relative">
+                                        <div className="aspect-[3/4] overflow-hidden bg-black border border-gray-800">
+                                            <img src={member.image} className="w-full h-full object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" />
+                                        </div>
+                                        <div className="mt-4">
+                                            <h3 className="text-xl font-cinzel font-bold text-white">{lang === 'zh' ? member.name_zh : member.name}</h3>
+                                            <p className="text-xs text-gray-400 font-mono uppercase tracking-widest">{lang === 'zh' ? member.role_zh : member.role}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="guestbook" className="py-24 px-6 bg-black border-t border-gray-900">
+                         <div className="container mx-auto"><Guestbook lang={lang} /></div>
+                    </section>
+
+                    <section id="store" className="py-24 px-6 bg-zinc-950">
+                        <div className="container mx-auto"><Merchandise lang={lang} /></div>
+                    </section>
+
+                    <footer className="py-12 bg-black text-center border-t border-gray-900">
+                        <p className="text-[10px] text-gray-600 uppercase tracking-widest font-mono">&copy; 2024 Disconnect+. {text.footer.rights}</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
