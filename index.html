@@ -5,18 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DISCONNECT+ | The Band</title>
     
-    <!-- 1. 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. 引入 React 和 Babel -->
     <script crossorigin src="https://cdn.staticfile.org/react/18.2.0/umd/react.development.js"></script>
     <script crossorigin src="https://cdn.staticfile.org/react-dom/18.2.0/umd/react-dom.development.js"></script>
     <script src="https://cdn.staticfile.org/babel-standalone/7.23.5/babel.min.js"></script>
 
-    <!-- 3. 自定义样式 -->
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
-      
       body { background-color: #000; color: #e5e5e5; font-family: 'Space Mono', monospace; overflow-x: hidden; }
       h1, h2, h3, h4 { font-family: 'Cinzel', serif; }
       
@@ -32,7 +27,6 @@
         left: -2px; text-shadow: -1px 0 #00fff9; clip: rect(44px, 9999px, 56px, 0);
         animation: glitch-anim2 5s infinite linear alternate-reverse;
       }
-      
       @keyframes glitch-anim {
         0% { clip: rect(10px, 9999px, 30px, 0); } 20% { clip: rect(40px, 9999px, 60px, 0); }
         40% { clip: rect(70px, 9999px, 20px, 0); } 60% { clip: rect(10px, 9999px, 80px, 0); }
@@ -43,14 +37,7 @@
         40% { clip: rect(15px, 9999px, 35px, 0); } 60% { clip: rect(60px, 9999px, 20px, 0); }
         80% { clip: rect(80px, 9999px, 40px, 0); } 100% { clip: rect(30px, 9999px, 60px, 0); }
       }
-
-      @keyframes fade-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #000; }
+      ::-webkit-scrollbar { width: 5px; }
       ::-webkit-scrollbar-thumb { background: #333; }
     </style>
 </head>
@@ -58,10 +45,15 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        // --- 数据配置区 ---
-        const BAND_IMAGES = {
-            SKELETON_BEACH: "./images/skeleton_beach.jpg",
-            SKELETON_LIGHTNING: "./images/skeleton_lightning.jpg" 
+        // --- CONSTANTS ---
+        const IMAGES = {
+            BEACH: "./images/skeleton_beach.jpg",
+            LIGHTNING: "./images/skeleton_lightning.jpg",
+            GUITAR: "./images/guitar.jpg",
+            SYNTH: "./images/synth.jpg",
+            RECORD: "./images/my_record.jpg",
+            TEE: "./images/hc.jpg",
+            ART: "./images/qz.jpg"
         };
 
         const SONGS = [
@@ -70,98 +62,59 @@
         ];
 
         const MEMBERS = [
-            {
-                name: "Kunbo", name_zh: "琨波", 
-                role: "Guitar / Synth / Visuals", role_zh: "吉他 / 合成器 / 视觉",
-                image: "./images/guitar.jpg", 
-                description: "Weaving visual noise into audio.", description_zh: "将视觉噪音编织成音频。"
-            },
-            {
-                name: "Wenye", name_zh: "文野", 
-                role: "Guitar / Synth / Production", role_zh: "吉他 / 合成器 / 制作",
-                image: "./images/synth.jpg", 
-                description: "Architect of the sonic landscape.", description_zh: "声景的构建者。"
-            }
+            { name: "Kunbo", zh: "琨波", role: "Guitar / Visuals", role_zh: "吉他 / 视觉", img: IMAGES.GUITAR, desc: "Visual noise as audio.", desc_zh: "将视觉噪音编织成音频。" },
+            { name: "Wenye", zh: "文野", role: "Synth / Production", role_zh: "合成器 / 制作", img: IMAGES.SYNTH, desc: "Architect of sound.", desc_zh: "声景的构建者。" }
         ];
 
-        const NEWS_UPDATES = [
-            { id: 1, date: "DEC 08", category: "RELEASE", category_zh: "发布", title: "Disconnect EP Out Now", title_zh: "同名EP现已发售", summary: "Physical copies available.", summary_zh: "实体唱片现已在商店上架。" },
-            { id: 2, date: "NOV 25", category: "EVENT", category_zh: "活动", title: "Secret Show Recap", title_zh: "地下室秘密演出回顾", summary: "Photos uploaded.", summary_zh: "来自地下掩体会议的照片已上传。" }
+        const NEWS = [
+            { date: "DEC 08", title: "EP Out Now", zh: "同名EP现已发售" },
+            { date: "NOV 25", title: "Secret Show Recap", zh: "秘密演出回顾" }
         ];
 
-        const MERCH_ITEMS = [
-            { id: 1, name: "Self-titled EP", name_zh: "同名EP", type: "Vinyl", type_zh: "黑胶", price: "$35.00", image: "./images/my_record.jpg", soldOut: false },
-            { id: 2, name: "Ritual Tee", name_zh: "仪式感 T恤", type: "Apparel", type_zh: "服饰", price: "$25.00", image: "./images/hc.jpg", soldOut: false },
-            { id: 3, name: "Disconnect Hoodie", name_zh: "断连卫衣", type: "Apparel", type_zh: "服饰", price: "$55.00", image: BAND_IMAGES.SKELETON_LIGHTNING, soldOut: false },
-            { id: 4, name: "Disconnect Artwork", name_zh: "Disconnect画作", type: "Print", type_zh: "海报/画作", price: "$15.00", image: "./images/qz.jpg", soldOut: false }
-        ];
-
-        const VIDEOS = [
-            { id: 1, title: "Official Music Video", title_zh: "官方 MV", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
-            { id: 2, title: "Live Session", title_zh: "现场录制", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }
+        const MERCH = [
+            { id: 1, name: "Vinyl EP", zh: "黑胶唱片", price: "$35", img: IMAGES.RECORD },
+            { id: 2, name: "Ritual Tee", zh: "仪式感T恤", price: "$25", img: IMAGES.TEE },
+            { id: 3, name: "Hoodie", zh: "断连卫衣", price: "$55", img: IMAGES.LIGHTNING },
+            { id: 4, name: "Artwork", zh: "画作海报", price: "$15", img: IMAGES.ART }
         ];
 
         const CONTENT = {
-            en: {
-                nav: { music: "MUSIC", news: "NEWS", visuals: "VISUALS", members: "MEMBERS", store: "STORE", guestbook: "LOGS" },
-                hero: { subtitle: "Surrealist Audio Visual Collective" },
-                music: { title: "TRANSMISSIONS" },
-                news: { title: "LATEST TRANSMISSIONS" },
-                visuals: { title: "VISUAL ARCHIVE", subtitle: "Signals captured on tape." },
-                members: { title: "THE ENTITIES", subtitle: "Fragments of consciousness trapped in digital bone." },
-                store: { title: "ARTIFACTS", subtitle: "Physical manifestations of the void.", buy: "ACQUIRE", soldOut: "SOLD OUT" },
-                guestbook: { title: "ECHOES OF THE VOID", namePlaceholder: "CODENAME", msgPlaceholder: "LEAVE A TRACE...", submit: "INITIATE", empty: "No signals detected." },
-                footer: { rights: "All rights reserved.", designed: "Designed in the Void." }
-            },
-            zh: {
-                nav: { music: "音乐", news: "动态", visuals: "视觉", members: "成员", store: "商店", guestbook: "留言" },
-                hero: { subtitle: "超现实视听集合体" },
-                music: { title: "信号传输" },
-                news: { title: "最新讯号" },
-                visuals: { title: "视觉档案", subtitle: "录像带捕捉到的信号。" },
-                members: { title: "实体", subtitle: "被困在数字骨骼中的意识碎片。" },
-                store: { title: "遗物", subtitle: "虚空的物理具象化。", buy: "获取", soldOut: "售罄" },
-                guestbook: { title: "虚空回响", namePlaceholder: "代号", msgPlaceholder: "留下你的痕迹...", submit: "启动上传", empty: "尚未检测到信号。" },
-                footer: { rights: "版权所有。", designed: "设计于虚空之中。" }
-            }
+            en: { nav: ["MUSIC", "NEWS", "MEMBERS", "VISUALS", "STORE", "LOGS"], hero: "Surrealist Collective", music: "TRANSMISSIONS", guestbook: "VOICE LOGS" },
+            zh: { nav: ["音乐", "动态", "成员", "视觉", "商店", "留言"], hero: "超现实视听集合体", music: "信号传输", guestbook: "虚空回响" }
         };
 
-        const getYouTubeEmbedUrl = (url) => {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? "https://www.youtube.com/embed/" + match[2] : null;
-        };
+        // --- COMPONENTS ---
+        const Guestbook = ({ lang }) => {
+            const [msgs, setMsgs] = React.useState([]);
+            const [name, setName] = React.useState('');
+            const [text, setText] = React.useState('');
 
-        // --- 组件区 ---
-        const MusicPlayer = ({ lang }) => {
-            const [currentSongId, setCurrentSongId] = React.useState(null);
-            const [isPlaying, setIsPlaying] = React.useState(false);
-            const audioRef = React.useRef(null);
-            const togglePlay = (id) => {
-                if (currentSongId === id) {
-                    if (isPlaying) { audioRef.current.pause(); setIsPlaying(false); }
-                    else { audioRef.current.play(); setIsPlaying(true); }
-                } else { setCurrentSongId(id); }
-            };
             React.useEffect(() => {
-                if (currentSongId !== null && audioRef.current) {
-                    const song = SONGS.find(s => s.id === currentSongId);
-                    if (song) { audioRef.current.src = song.src; audioRef.current.play(); setIsPlaying(true); }
-                }
-            }, [currentSongId]);
+                const saved = localStorage.getItem('disconnect_msgs');
+                if (saved) setMsgs(JSON.parse(saved));
+            }, []);
+
+            const send = (e) => {
+                e.preventDefault();
+                if (!text.trim()) return;
+                const newMsgs = [{ id: Date.now(), name: name || "Anonymous", text }, ...msgs];
+                setMsgs(newMsgs);
+                localStorage.setItem('disconnect_msgs', JSON.stringify(newMsgs));
+                setName(''); setText('');
+            };
+
             return (
-                <div className="w-full max-w-xl mx-auto">
-                    <audio ref={audioRef} onEnded={() => setIsPlaying(false)} />
-                    <h3 className="text-xl md:text-2xl font-bold font-cinzel tracking-wider mb-6 border-b border-gray-800 pb-2 uppercase">{CONTENT[lang].music.title}</h3>
-                    <div className="flex flex-col gap-2">
-                        {SONGS.map((song) => (
-                            <div key={song.id} onClick={() => togglePlay(song.id)}
-                                className={`group flex items-center justify-between p-4 cursor-pointer transition-all border border-transparent hover:border-gray-800 ${currentSongId === song.id ? 'bg-white/10 border-gray-800' : 'hover:bg-white/5'}`}>
-                                <div className="flex items-center gap-4">
-                                    <span className="text-xs text-gray-500 font-mono">{currentSongId === song.id && isPlaying ? "||" : "▶"}</span>
-                                    <span className={`font-mono uppercase text-xs md:text-sm ${currentSongId === song.id ? 'text-white' : 'text-gray-400'}`}>{song.title}</span>
-                                </div>
-                                <span className="text-[10px] text-gray-600 font-mono">{song.duration}</span>
+                <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
+                    <form onSubmit={send} className="w-full md:w-1/3 flex flex-col gap-4">
+                        <input value={name} onChange={e=>setName(e.target.value)} placeholder="CODENAME" className="bg-white/5 border border-gray-800 p-3 text-xs focus:border-white outline-none" />
+                        <textarea value={text} onChange={e=>setText(e.target.value)} placeholder="MESSAGE..." rows="3" className="bg-white/5 border border-gray-800 p-3 text-xs focus:border-white outline-none resize-none" />
+                        <button className="bg-white text-black py-2 text-[10px] font-bold uppercase hover:bg-red-600 hover:text-white transition-all">Submit</button>
+                    </form>
+                    <div className="w-full md:w-2/3 max-h-[250px] overflow-y-auto space-y-4 pr-2">
+                        {msgs.map(m => (
+                            <div key={m.id} className="border border-gray-900 p-4">
+                                <div className="text-[10px] text-gray-400 mb-1">{m.name}</div>
+                                <div className="text-xs text-gray-500">{m.text}</div>
                             </div>
                         ))}
                     </div>
@@ -170,147 +123,117 @@
         };
 
         const App = () => {
-            const [scrolled, setScrolled] = React.useState(false);
             const [lang, setLang] = React.useState('zh');
-            const text = CONTENT[lang];
+            const [scrolled, setScrolled] = React.useState(false);
+            const t = CONTENT[lang];
 
             React.useEffect(() => {
-                const handleScroll = () => setScrolled(window.scrollY > 50);
-                window.addEventListener('scroll', handleScroll);
-                return () => window.removeEventListener('scroll', handleScroll);
+                window.addEventListener('scroll', () => setScrolled(window.scrollY > 50));
             }, []);
 
             return (
-                <div className="min-h-screen bg-black text-gray-200 selection:bg-white selection:text-black">
-                    {/* 导航 */}
-                    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-black/90 backdrop-blur-md border-b border-white/10 py-4' : 'bg-transparent py-6'}`}>
+                <div className="min-h-screen">
+                    <nav className={`fixed top-0 w-full z-50 transition-all ${scrolled ? 'bg-black/90 py-4 border-b border-white/10' : 'py-6'}`}>
                         <div className="container mx-auto px-6 flex justify-between items-center">
                             <div className="flex items-center gap-4">
-                                <div className="font-cinzel font-bold text-lg tracking-widest text-white">DISCONNECT+</div>
-                                <button onClick={() => setLang(l => l === 'en' ? 'zh' : 'en')} className="text-[9px] border border-white/20 px-2 py-1 hover:bg-white hover:text-black transition-all font-mono">
-                                    {lang === 'en' ? '中文' : 'EN'}
+                                <span className="font-cinzel font-black text-xl">DISCONNECT+</span>
+                                <button onClick={()=>setLang(l=>l==='en'?'zh':'en')} className="text-[9px] border border-white/20 px-2 py-1 hover:bg-white hover:text-black transition-all">
+                                    {lang==='en'?'中文':'EN'}
                                 </button>
                             </div>
-                            <div className="hidden md:flex gap-8 text-[10px] font-mono tracking-widest">
-                                <a href="#music" className="hover:text-white transition-colors">{text.nav.music}</a>
-                                <a href="#news" className="hover:text-white transition-colors">{text.nav.news}</a>
-                                <a href="#members" className="hover:text-white transition-colors">{text.nav.members}</a>
-                                <a href="#store" className="hover:text-white transition-colors">{text.nav.store}</a>
+                            <div className="hidden md:flex gap-6 text-[10px] font-bold">
+                                {t.nav.map((n, i) => <a key={i} href={`#${["music", "news", "members", "visuals", "store", "logs"][i]}`} className="hover:text-red-500">{n}</a>)}
                             </div>
                         </div>
                     </nav>
 
-                    {/* 英雄区 (Hero) - 手机端标题已缩小 */}
-                    <header className="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden">
-                        <div className="absolute inset-0 z-0 opacity-40">
-                            <img src={BAND_IMAGES.SKELETON_BEACH} className="w-full h-full object-cover grayscale" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black"></div>
-                        </div>
+                    <header className="h-screen flex items-center justify-center relative px-4 overflow-hidden text-center">
+                        <img src={IMAGES.BEACH} className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale" />
                         <div className="relative z-10">
-                            <h1 className="text-4xl sm:text-6xl md:text-9xl font-black text-white tracking-tighter font-cinzel glitch-text uppercase" data-text="DISCONNECT+">
-                                DISCONNECT+
-                            </h1>
-                            <p className="mt-4 text-[9px] md:text-xs font-mono tracking-[0.3em] text-gray-400 uppercase max-w-xs mx-auto">
-                                {text.hero.subtitle}
-                            </p>
+                            <h1 className="text-4xl sm:text-6xl md:text-9xl font-black glitch-text" data-text="DISCONNECT+">DISCONNECT+</h1>
+                            <p className="mt-4 text-[10px] tracking-[0.4em] uppercase text-gray-400">{t.hero}</p>
                         </div>
                     </header>
 
-                    {/* 音乐区 */}
                     <section id="music" className="py-24 px-6 bg-zinc-950">
-                        <div className="container mx-auto flex flex-col md:flex-row gap-16 items-center">
-                            <div className="w-full md:w-1/2 flex justify-center">
-                                <img src={BAND_IMAGES.SKELETON_LIGHTNING} className="w-full max-w-sm grayscale border border-gray-900 shadow-2xl" />
-                            </div>
-                            <div className="w-full md:w-1/2">
-                                <MusicPlayer lang={lang} />
+                        <div className="container mx-auto flex flex-col md:flex-row gap-12 items-center">
+                            <img src={IMAGES.LIGHTNING} className="w-full md:w-1/3 grayscale border border-gray-800" />
+                            <div className="w-full md:w-2/3">
+                                <h2 className="text-2xl font-cinzel mb-8 border-b border-gray-800 pb-2">{t.music}</h2>
+                                {SONGS.map(s => (
+                                    <div key={s.id} className="p-4 hover:bg-white/5 border-b border-gray-900 flex justify-between text-sm cursor-pointer group">
+                                        <span className="group-hover:text-red-500">▶ {s.title}</span>
+                                        <span className="text-gray-600 font-mono text-xs">{s.duration}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </section>
 
-                    {/* 成员区 (Restore Members Section) */}
-                    <section id="members" className="py-24 px-6 bg-zinc-900">
+                    <section id="members" className="py-24 px-6 bg-black">
                         <div className="container mx-auto">
-                            <h2 className="text-3xl md:text-5xl font-cinzel font-bold text-center mb-4 text-white tracking-widest uppercase">{text.members.title}</h2>
-                            <p className="text-center text-gray-600 font-mono text-[10px] uppercase tracking-widest mb-16 max-w-md mx-auto">{text.members.subtitle}</p>
+                            <h2 className="text-3xl font-cinzel text-center mb-16">{lang==='zh'?'实体':'THE ENTITIES'}</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-                                {MEMBERS.map((member, idx) => (
-                                    <div key={idx} className="group">
-                                        <div className="aspect-[3/4] overflow-hidden bg-black border border-gray-800">
-                                            <img src={member.image} className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" />
-                                        </div>
-                                        <div className="mt-6 border-l-2 border-gray-800 pl-4">
-                                            <h3 className="text-xl font-cinzel font-bold text-white">{lang === 'zh' ? member.name_zh : member.name}</h3>
-                                            <p className="text-[10px] text-red-500 font-mono uppercase tracking-[0.2em] mt-1">{lang === 'zh' ? member.role_zh : member.role}</p>
-                                            <p className="mt-4 text-xs text-gray-500 font-mono leading-relaxed">{lang === 'zh' ? member.description_zh : member.description}</p>
-                                        </div>
+                                {MEMBERS.map((m, i) => (
+                                    <div key={i} className="group">
+                                        <img src={m.img} className="aspect-[3/4] object-cover grayscale opacity-60 group-hover:opacity-100 transition-all duration-700 border border-gray-900" />
+                                        <h3 className="text-xl mt-4 font-cinzel">{lang==='zh'?m.zh:m.name}</h3>
+                                        <p className="text-[10px] text-red-500 uppercase">{lang==='zh'?m.role_zh:m.role}</p>
+                                        <p className="text-xs text-gray-500 mt-2 font-mono">{lang==='zh'?m.desc_zh:m.desc}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </section>
 
-                    {/* 新闻区 */}
-                    <section id="news" className="py-24 px-6 bg-black">
-                        <div className="container mx-auto max-w-4xl">
-                            <h2 className="text-3xl md:text-5xl font-cinzel font-bold text-center mb-16 text-white tracking-widest uppercase">{text.news.title}</h2>
-                            <div className="border-t border-gray-900">
-                                {NEWS_UPDATES.map((item) => (
-                                    <div key={item.id} className="group flex flex-col md:flex-row items-baseline py-8 border-b border-gray-900 hover:bg-white/5 transition-colors px-4">
-                                        <span className="text-xl font-bold font-cinzel text-white md:w-32">{item.date}</span>
-                                        <div className="flex-grow mt-2 md:mt-0">
-                                            <h3 className="text-sm md:text-base font-mono text-gray-300 uppercase">{lang === 'zh' ? item.title_zh : item.title}</h3>
-                                            <p className="text-[10px] text-gray-600 font-mono mt-1">{lang === 'zh' ? item.summary_zh : item.summary}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                    <section id="news" className="py-24 px-6 bg-zinc-950">
+                        <div className="max-w-4xl mx-auto">
+                            <h2 className="text-3xl font-cinzel text-center mb-12 uppercase">{lang==='zh'?'最新讯号':'Transmissions'}</h2>
+                            {NEWS.map((n, i) => (
+                                <div key={i} className="flex gap-8 py-6 border-b border-gray-900 items-baseline">
+                                    <span className="font-cinzel text-xl text-white">{n.date}</span>
+                                    <span className="text-xs font-mono text-gray-400 uppercase tracking-widest">{lang==='zh'?n.zh:n.title}</span>
+                                </div>
+                            ))}
                         </div>
                     </section>
 
-                    {/* 视觉区 */}
-                    <section id="visuals" className="py-24 px-6 bg-zinc-950">
+                    <section id="visuals" className="py-24 px-6 bg-black">
                         <div className="container mx-auto text-center">
-                            <h2 className="text-3xl md:text-5xl font-cinzel font-bold mb-16 text-white tracking-widest uppercase">{text.visuals.title}</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                                {VIDEOS.map((video) => (
-                                    <div key={video.id} className="w-full">
-                                        <div className="relative aspect-video border border-gray-900 bg-black group overflow-hidden">
-                                            <iframe src={getYouTubeEmbedUrl(video.url)} className="absolute inset-0 w-full h-full grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all" frameBorder="0" allowFullScreen></iframe>
-                                        </div>
-                                        <h4 className="mt-4 text-[10px] font-mono text-gray-600 uppercase text-left">{lang === 'zh' ? video.title_zh : video.title}</h4>
-                                    </div>
-                                ))}
+                            <h2 className="text-3xl font-cinzel mb-16 uppercase">{lang==='zh'?'视觉档案':'Visuals'}</h2>
+                            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                                <div className="aspect-video bg-zinc-900 border border-gray-800 flex items-center justify-center text-[10px] text-gray-600 uppercase">Signal Lost</div>
+                                <div className="aspect-video bg-zinc-900 border border-gray-800 flex items-center justify-center text-[10px] text-gray-600 uppercase">Signal Lost</div>
                             </div>
                         </div>
                     </section>
 
-                    {/* 商店区 */}
-                    <section id="store" className="py-24 px-6 bg-black">
+                    <section id="store" className="py-24 px-6 bg-zinc-950">
                         <div className="container mx-auto">
-                            <h2 className="text-3xl md:text-5xl font-cinzel font-bold text-center mb-16 text-white tracking-widest uppercase">{text.store.title}</h2>
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                                {MERCH_ITEMS.map((item) => (
-                                    <div key={item.id} className="group flex flex-col bg-black border border-gray-900 hover:border-gray-700 transition-all">
-                                        <div className="aspect-square overflow-hidden bg-zinc-900">
-                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                            <h2 className="text-3xl font-cinzel text-center mb-16 uppercase">{lang==='zh'?'商店':'Artifacts'}</h2>
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                {MERCH.map(m => (
+                                    <div key={m.id} className="border border-gray-900 p-2 group hover:border-white transition-all">
+                                        <div className="aspect-square bg-black mb-4 overflow-hidden">
+                                            <img src={m.img} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                                         </div>
-                                        <div className="p-4 flex flex-grow flex-col">
-                                            <span className="text-[9px] text-gray-600 font-mono uppercase mb-1">{lang === 'zh' ? item.type_zh : item.type}</span>
-                                            <h4 className="text-xs md:text-sm font-cinzel text-white mb-4 h-8 overflow-hidden">{lang === 'zh' ? item.name_zh : item.name}</h4>
-                                            <button className="mt-auto w-full py-2 border border-gray-800 text-[9px] font-mono uppercase hover:bg-white hover:text-black transition-colors">
-                                                {item.price} - {text.store.buy}
-                                            </button>
-                                        </div>
+                                        <div className="text-[10px] font-bold uppercase truncate">{lang==='zh'?m.zh:m.name}</div>
+                                        <div className="text-[9px] text-gray-500 mt-1">{m.price}</div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </section>
 
-                    {/* 页脚 */}
-                    <footer className="py-12 bg-black text-center border-t border-gray-900">
-                        <p className="text-[9px] text-gray-700 uppercase tracking-widest font-mono">&copy; 2024 DISCONNECT+. {text.footer.rights}</p>
+                    <section id="logs" className="py-24 px-6 bg-black border-t border-gray-900">
+                        <div className="container mx-auto">
+                            <h2 className="text-2xl font-cinzel text-center mb-12 uppercase">{t.guestbook}</h2>
+                            <Guestbook lang={lang} />
+                        </div>
+                    </section>
+
+                    <footer className="py-12 bg-black border-t border-gray-900 text-center text-[8px] text-gray-700 font-mono tracking-widest uppercase">
+                        &copy; 2024 DISCONNECT+. Designed in the Void.
                     </footer>
                 </div>
             );
